@@ -1,0 +1,28 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+
+df = pd.read_csv('customers.csv')
+
+print(df.head())
+print(df.info())
+
+X = df[['feature1', 'feature2', 'feature3', 'feature4']]
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+kmeans = KMeans(n_clusters=3, random_state=42)  # Adjust 'n_clusters' as needed
+kmeans.fit(X_scaled)
+
+df['Cluster'] = kmeans.labels_
+
+plt.scatter(X_scaled[:, 0], X_scaled[:, 1], c=kmeans.labels_, cmap='viridis')
+plt.title('Customer Segments')
+plt.xlabel('Feature 1 (Scaled)')
+plt.ylabel('Feature 2 (Scaled)')
+plt.show()
+
+# Analyze the clusters
+print(df.groupby('Cluster').mean())
